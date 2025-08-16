@@ -9,7 +9,7 @@ import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
-import { Server } from 'socket.io';
+import { initializeSocket } from './utils/socketSingleton.js'; // ✅ 
 import User from './models/User.js';
 
 dotenv.config();
@@ -18,13 +18,8 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// ===== CORS =====
-app.use(cors({
-  origin: '*', // 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
-
+// ===== Middleware =====
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'], credentials: true }));
 app.use(express.json());
 
 // ===== Routes =====
@@ -34,28 +29,22 @@ app.use('/api/users', userRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-// ===== Socket.io =====
-const io = new Server(server, {
-  cors: {
-    origin: '*', //allow
-    methods: ['GET', 'POST']
-  }
-});
+// ===== Initialize Socket.io =====
+const io = initializeSocket(server);  // ✅ খুব গুরুত্বপূর্ণ
 
 const activeUsers = new Map();
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  // User join 
   socket.on('join', async (userId) => {
     try {
       socket.userId = userId;
-      socket.join(userId); // user-specific room
+      socket.join(userId);
+
       const user = await User.findById(userId).select('username');
       if (user) {
         activeUsers.set(userId, { id: userId, username: user.username });
-        console.log('Active users:', Array.from(activeUsers.values()));
         io.emit('activeUsers', Array.from(activeUsers.values()));
       }
     } catch (err) {
@@ -63,7 +52,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Disconnect
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
     activeUsers.delete(socket.userId);
