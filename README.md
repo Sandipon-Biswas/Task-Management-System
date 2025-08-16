@@ -23,10 +23,22 @@
 
 ## Screenshots
 
-![Screenshot 1](./image/1.png)
+## admin dashboard
+
 ![Screenshot 2](./image/2.png)
+
+##  click any user by admin 
+
+![Screenshot 1](./image/1.png)
+
+## activer user list using using socket io
+
 ![Screenshot 3](./image/3.png)
+
+## user can see notifications
+
 ![Screenshot 4](./image/4.png)
+
 ![Screenshot 5](./image/5.png) 
 
 
