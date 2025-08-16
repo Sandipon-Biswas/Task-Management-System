@@ -1,22 +1,9 @@
-import io from 'socket.io-client';
+// socket.js
+import { io } from 'socket.io-client';
 
-const socket = io(import.meta.env.VITE_SOCKET_URL, {
-  autoConnect: false,
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-});
-
-socket.on('connect', () => {
-  console.log('Socket connected:', socket.id); // Debug
-});
-
-socket.on('connect_error', (err) => {
-  console.error('Socket connection error:', err.message); // Debug
-});
-
-socket.on('disconnect', () => {
-  console.log('Socket disconnected'); // Debug
+// Backend URL 
+const socket = io('https://task-management-system-4xxe.onrender.com', {
+  autoConnect: false, 
 });
 
 export default socket;
