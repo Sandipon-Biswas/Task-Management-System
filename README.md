@@ -1,12 +1,21 @@
-# React + Vite
+# Task Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Live:** https://task-management-system-1-877v.onrender.com/  
+**Video:** https://youtu.be/3kssfeSwrk0?si=s_nGP_JahiHGkKd0  
+**Repo:** https://github.com/Sandipon-Biswas/Task-Management-System  
 
-Currently, two official plugins are available:
+## Features
+- Admin can assign tasks to any user  
+- User can update task status: Pending → In Progress → Completed  
+- Show active users and their names  
+- Notifications saved in History tab  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Demo Login
+- **Admin:** `admin` / `admin`  
+- **User:** `user` / `user`  
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## How to Test (Step by Step)
+1. Login as **Admin** → assign task to any user  
+2. Login as **User** → check tasks → change status  
+3. Go to **Active Users** → see all online users  
+4. Open **History** → view notifications  
