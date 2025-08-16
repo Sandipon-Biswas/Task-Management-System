@@ -54,6 +54,7 @@ io.on('connection', (socket) => {
     io.emit('activeUsers', Array.from(activeUsers.values()));
   });
 });
+
 app.get('/',(req,res)=>{
   res.send("hello world")
 })
