@@ -10,9 +10,9 @@
 - Show active users and their names  
 - Notifications saved in History tab  
 
-## Demo Login
-- **Admin:** `admin` / `admin`  
-- **User:** `user` / `user`  
+## Demo Login to access
+- **Admin:** `Username: admin` / `Password: admin`  
+- **User:** `username: user` / `Passwrod: user`  
 
 ## How to Test (Step by Step)
 1. Login as **Admin** → assign task to any user  
