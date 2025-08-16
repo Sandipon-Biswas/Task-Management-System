@@ -19,7 +19,7 @@ const Navbar = () => {
           {user ? (
             <>
               <li><Link to="/">Home</Link></li>
-              <li><Link  onClick={() => window.location.href="/active-users"}  to="/active-users">Active Users</Link></li>
+              <li><Link to="/active-users">Active Users</Link></li>
               <li><Link to="/notifications">Notification History</Link></li>
               <li><button onClick={handleLogout}>Logout</button></li>
             </>
