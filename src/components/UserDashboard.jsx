@@ -7,37 +7,43 @@ const UserDashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [progress, setProgress] = useState(0);
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // tasks loading
+  const [statusLoading, setStatusLoading] = useState({}); // task-wise loading
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
-    if (!userData) return;
+    if (!userData) {
+      setError('User not found');
+      setIsLoading(false);
+      return;
+    }
     setUser(userData);
 
-    // Function to fetch tasks & progress
     const fetchTasksAndProgress = async () => {
-      const { data: taskData } = await getTasks({ assignee: userData.id });
-      setTasks(taskData);
+      try {
+        setIsLoading(true);
+        const { data: taskData } = await getTasks({ assignee: userData.id });
+        setTasks(taskData);
 
-      const { data: progressData } = await getProgress();
-      setProgress(progressData.progress);
+        const { data: progressData } = await getProgress();
+        setProgress(progressData.progress);
+      } catch (err) {
+        setError(err.response?.data?.error || 'Problem fetching tasks');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    // Initial fetch
     fetchTasksAndProgress();
 
-    // Connect the socket
     socket.connect();
-
-    // Optional: join user-specific room
     socket.emit('joinRoom', userData.id);
 
-    // Listen to new notifications
-    socket.on('newNotification', (notification) => {
-      console.log('New notification received:', notification);
-      fetchTasksAndProgress(); // Refresh tasks & progress
+    socket.on('newNotification', () => {
+      fetchTasksAndProgress();
     });
 
-    // Cleanup on unmount
     return () => {
       socket.off('newNotification');
       socket.disconnect();
@@ -45,9 +51,21 @@ const UserDashboard = () => {
   }, []);
 
   const handleStatusUpdate = async (id, status) => {
-    await updateStatus(id, status);
-    const { data } = await getTasks({ assignee: user?.id });
-    setTasks(data);
+    try {
+      // Set task-specific loading
+      setStatusLoading(prev => ({ ...prev, [id]: true }));
+      
+      await updateStatus(id, status);
+      const { data } = await getTasks({ assignee: user?.id });
+      setTasks(data);
+      
+      const { data: progressData } = await getProgress();
+      setProgress(progressData.progress);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Problem updating status');
+    } finally {
+      setStatusLoading(prev => ({ ...prev, [id]: false }));
+    }
   };
 
   return (
@@ -57,25 +75,38 @@ const UserDashboard = () => {
         User Dashboard {user && `- Welcome, ${user.username}`}
       </h1>
       <p className="mb-6">Progress: {progress}%</p>
+
       <h2 className="text-2xl mb-2">My Tasks</h2>
-      <ul className="space-y-4">
-        {tasks.map(task => (
-          <li key={task._id} className="p-4 bg-white rounded shadow">
-            <h3 className="font-bold">{task.title}</h3>
-            <p>Status: {task.status}</p>
-            <p>Deadline: {task.deadline ? new Date(task.deadline).toLocaleDateString() : 'N/A'}</p>
-            <select
-              value={task.status}
-              onChange={(e) => handleStatusUpdate(task._id, e.target.value)}
-              className="mt-2 px-2 py-1 border rounded"
-            >
-              <option value="pending">Pending</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
-            </select>
-          </li>
-        ))}
-      </ul>
+
+      {isLoading && <p>Loading tasks...</p>}
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
+      {!isLoading && !error && (
+        <ul className="space-y-4">
+          {tasks.length > 0 ? (
+            tasks.map(task => (
+              <li key={task._id} className="p-4 bg-white rounded shadow">
+                <h3 className="font-bold">{task.title}</h3>
+                <p>Status: {task.status}</p>
+                <p>Deadline: {task.deadline ? new Date(task.deadline).toLocaleDateString() : 'N/A'}</p>
+                <select
+                  value={task.status}
+                  onChange={(e) => handleStatusUpdate(task._id, e.target.value)}
+                  className="mt-2 px-2 py-1 border rounded"
+                  disabled={statusLoading[task._id]} // block dropdown while updating
+                >
+                  <option value="pending">Pending</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+                {statusLoading[task._id] && <span className="ml-2 text-sm text-gray-500">Updating...</span>}
+              </li>
+            ))
+          ) : (
+            <p>No tasks assigned.</p>
+          )}
+        </ul>
+      )}
     </div>
   );
 };

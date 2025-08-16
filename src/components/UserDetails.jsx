@@ -11,6 +11,7 @@ const UserDetails = () => {
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,22 +41,28 @@ const UserDetails = () => {
   }, [id]);
 
   const handleAssignTask = async () => {
-    if (!title) return setError('task title');
-    try {
-      await createTask({ title, description, deadline, assignee: id });
-      // Refresh tasks and progress
-      const { data: tasksData } = await getTasks({ assignee: id });
-      setTasks(tasksData);
-      const { data: reportData } = await getReport('user', id);
-      setProgress(reportData.progress || 0);
-      setTitle('');
-      setDescription('');
-      setDeadline('');
-      setError('');
-    } catch (err) {
-      setError(err.response?.data?.error || 'problemt o assign the task');
-    }
-  };
+  if (!title) return setError('Task title is required');
+  try {
+    setIsLoading(true); // start loading
+    await createTask({ title, description, deadline, assignee: id });
+    
+    // Refresh tasks and progress
+    const { data: tasksData } = await getTasks({ assignee: id });
+    setTasks(tasksData);
+    const { data: reportData } = await getReport('user', id);
+    setProgress(reportData.progress || 0);
+
+    // Clear input fields & error
+    setTitle('');
+    setDescription('');
+    setDeadline('');
+    setError('');
+  } catch (err) {
+    setError(err.response?.data?.error || 'Problem to assign the task');
+  } finally {
+    setIsLoading(false); // stop loading
+  }
+};
 
   const handleDeleteTask = async (taskId) => {
     if (!confirm('do you want to delete the task?')) return;
@@ -165,12 +172,14 @@ const UserDetails = () => {
             onChange={(e) => setDeadline(e.target.value)} 
             className="block mb-2 px-3 py-2 border rounded w-full"
           />
-          <button 
-            onClick={handleAssignTask} 
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-          >
-            Assign Task
-          </button>
+<button 
+  onClick={handleAssignTask} 
+  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+  disabled={isLoading} // prevent double click
+>
+  {isLoading ? 'Assigning...' : 'Assign Task'}
+</button>
+
 
           <h2 className="text-2xl font-bold mt-6 mb-4">Progress Report</h2>
           <button 
