@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Socket.IO Test</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.2/socket.io.js" integrity="sha512-VJ6+sp2E5rFQk05caiXXzQd1wBABpjEj1r5kMiLmGAAgwPItw1YpqsCCBtq8Yr1x6C49/mTpRdXtq8O2RcZhlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+
+
+<script>
+    // Connect to Socket.IO server
+    const socket = io();
+//     socket.on('myCustomEvent', (data)=>{
+// document.write(data.description)
+//     })
+//     socket.emit('a',"message from cilnt side")
+    socket.on('newuser',(data)=>{
+        document.body.innerHTML='';
+        document.write(data.message);
+    })
+</script>
+</body>
+</html>
