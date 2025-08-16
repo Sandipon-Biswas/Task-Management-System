@@ -19,7 +19,15 @@
 2. Login as **User** → check tasks → change status  
 3. Go to **Active Users** → see all online users  
 4. Open **History** → view notifications  
-![App Screenshot](https://i.ibb.co.com/5g3F8J9n/Fire-Shot-Capture-032-Sandipon-Biswas-Task-Management-System-github-com.png)  
+# Task Management System
+
+## Screenshots
+
+![Screenshot 1](./image/1.png)
+![Screenshot 2](./image/2.png)
+![Screenshot 3](./image/3.png)
+![Screenshot 4](./image/4.png)
+![Screenshot 5](./image/5.png) 
 
 
 
