@@ -19,12 +19,7 @@
 2. Login as **User** → check tasks → change status  
 3. Go to **Active Users** → see all online users  
 4. Open **History** → view notifications  
-![App Screenshot](https://i.ibb.co.com/4wF92CQj/hostory.png)  
-![App Screenshot](https://i.ibb.co.com/svYRVdwS/user-dadh.png)  
-![App Screenshot](https://i.ibb.co.com/RGBywRRx/sdfsdf.png)  
-![App Screenshot](https://i.ibb.co.com/222h61F/Fire-Shot-Capture-028-Visdfsdf.png)  
-![App Screenshot](https://i.ibb.co.com/Ngm8fDHg/Fire-Shot-Capture-026-Vite-React-task-management-system-1-877v-onrender-com.png)  
-
+![App Screenshot](https://i.ibb.co.com/5g3F8J9n/Fire-Shot-Capture-032-Sandipon-Biswas-Task-Management-System-github-com.png)  
 
 
 
